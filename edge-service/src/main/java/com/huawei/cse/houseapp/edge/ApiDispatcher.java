@@ -4,7 +4,7 @@ import org.apache.servicecomb.edge.core.DefaultEdgeDispatcher;
 
 import com.netflix.config.DynamicPropertyFactory;
 
-import io.vertx.ext.web.Cookie;
+import io.vertx.core.http.Cookie;
 import io.vertx.ext.web.RoutingContext;
 
 public class ApiDispatcher extends DefaultEdgeDispatcher {

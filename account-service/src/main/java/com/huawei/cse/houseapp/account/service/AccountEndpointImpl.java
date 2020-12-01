@@ -1,24 +1,21 @@
 package com.huawei.cse.houseapp.account.service;
 
-import javax.inject.Inject;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import org.apache.servicecomb.provider.pojo.RpcSchema;
-import org.apache.servicecomb.swagger.invocation.exception.InvocationException;
-
+import com.huawei.cse.houseapp.BizException;
 import com.huawei.cse.houseapp.account.api.AccountEndpoint;
 import com.huawei.cse.houseapp.account.dao.AccountInfo;
 import com.huawei.cse.houseapp.account.dao.AccountMapper;
 
 import io.swagger.annotations.ApiResponse;
 
-@RpcSchema(schemaId = "account")
 public class AccountEndpointImpl implements AccountEndpoint {
   //内存测试
   //private AccountMapper accountMapper = new MockedAccountMapper();
-  @Inject
+  @Autowired
   private AccountMapper accountMapper;
 
-  @Inject
+  @Autowired
   AccountService accountService;
 
   @Override
@@ -46,10 +43,10 @@ public class AccountEndpointImpl implements AccountEndpoint {
   public boolean payWithoutTransaction(long userId, double amount) {
     AccountInfo info = accountMapper.getAccountInfo(userId);
     if (info == null) {
-      throw new InvocationException(400, "", "account id not valid");
+      throw new BizException(400, "account id not valid");
     }
     if (info.getTotalBalance() < amount) {
-      throw new InvocationException(400, "", "account do not have enouph money");
+      throw new BizException(400, "account do not have enough money");
     }
     info.setTotalBalance(info.getTotalBalance() - amount);
     accountMapper.updateAccountInfo(info);

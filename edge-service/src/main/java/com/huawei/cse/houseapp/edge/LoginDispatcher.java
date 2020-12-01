@@ -6,10 +6,9 @@ import org.apache.servicecomb.swagger.invocation.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.vertx.ext.web.Cookie;
+import io.vertx.core.http.Cookie;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-import io.vertx.ext.web.handler.CookieHandler;
 
 public class LoginDispatcher extends AbstractEdgeDispatcher {
   private static Logger LOGGER = LoggerFactory.getLogger(LoginDispatcher.class);
@@ -27,7 +26,6 @@ public class LoginDispatcher extends AbstractEdgeDispatcher {
 
   @Override
   public void init(Router router) {
-    router.routeWithRegex(LOGIN_URI).handler(CookieHandler.create());
     router.routeWithRegex(LOGIN_URI).handler(createBodyHandler());
     router.routeWithRegex(LOGIN_URI).failureHandler(this::onFailure).handler(this::onRequest);
   }

@@ -1,29 +1,24 @@
 package com.huawei.cse.houseapp.user.service;
 
-import javax.inject.Inject;
-import javax.ws.rs.core.Response.Status;
-
-import org.apache.servicecomb.pack.omega.transaction.annotations.Compensable;
-import org.apache.servicecomb.pack.omega.transaction.annotations.Participate;
-import org.apache.servicecomb.swagger.invocation.exception.InvocationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.huawei.cse.houseapp.BizException;
 import com.huawei.cse.houseapp.user.api.UserInfo;
 import com.huawei.cse.houseapp.user.dao.UserMapper;
 
 @Service
 public class UserService {
-  @Inject
+  @Autowired
   private UserMapper userMapper;
 
-  @Compensable(compensationMethod = "cancelTransactionSaga")
   public boolean buyWithTransactionSaga(long userId, double price) {
     UserInfo info = userMapper.getUserInfo(userId);
     if (info == null) {
-      throw new InvocationException(400, "", "user id not valid");
+      throw new BizException(400, "user id not valid");
     }
     if (info.getTotalBalance() < price) {
-      throw new InvocationException(400, "", "user do not got so mush money");
+      throw new BizException(400, "user do not got so mush money");
     }
     info.setTotalBalance(info.getTotalBalance() - price);
     userMapper.updateUserInfo(info);
@@ -36,21 +31,20 @@ public class UserService {
     // 2. 如果没有扣款，那么不能增加款项；
     UserInfo info = userMapper.getUserInfo(userId);
     if (info == null) {
-      throw new InvocationException(400, "", "user id not valid");
+      throw new BizException(400, "user id not valid");
     }
     info.setTotalBalance(info.getTotalBalance() + price);
     userMapper.updateUserInfo(info);
     return true;
   }
 
-  @Participate(confirmMethod = "confirmTransactionTCC", cancelMethod = "cancelTransactionTCC")
   public boolean buyWithTransactionTCC(long userId, double price) {
     UserInfo info = userMapper.getUserInfo(userId);
     if (info == null) {
-      throw new InvocationException(Status.BAD_REQUEST, "user id not valid");
+      throw new BizException(400, "user id not valid");
     }
     if (info.isReserved()) {
-      throw new InvocationException(Status.BAD_REQUEST, "user have already reserved a house");
+      throw new BizException(400, "user have already reserved a house");
     }
 
     if (info.getTotalBalance() < price) {

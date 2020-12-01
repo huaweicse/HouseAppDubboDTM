@@ -2,19 +2,16 @@ package com.huawei.cse.houseapp.customer.service;
 
 import java.util.List;
 
-import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 
-import org.apache.servicecomb.provider.pojo.RpcReference;
-import org.apache.servicecomb.provider.rest.common.RestSchema;
-import org.apache.servicecomb.swagger.invocation.exception.InvocationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import com.huawei.cse.houseapp.BizException;
 import com.huawei.cse.houseapp.account.api.AccountEndpoint;
 import com.huawei.cse.houseapp.customer.api.CustomerEndpoint;
 import com.huawei.cse.houseapp.product.api.ProductEndpoint;
@@ -24,8 +21,7 @@ import com.huawei.cse.houseapp.user.api.UserEndpoint;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 
-@RestSchema(schemaId = "customer")
-@RequestMapping(path = "/")
+@Path("/")
 public class CustomerEndpointImpl implements CustomerEndpoint {
   @Value("${cse.test.house.modelValue:'abc'}")
   private String valueTest;
@@ -39,53 +35,57 @@ public class CustomerEndpointImpl implements CustomerEndpoint {
   @Autowired
   private ConfigurationPropertiesModel model;
 
-  @Inject
+  @Autowired
   public CustomerService customerSerivce;
 
-  @RpcReference(microserviceName = "user-service", schemaId = "user")
+  @Autowired
   private UserEndpoint userService;
 
-  @RpcReference(microserviceName = "product-service", schemaId = "product")
+  @Autowired
   private ProductEndpoint productService;
 
-  @RpcReference(microserviceName = "account-service", schemaId = "account")
+  @Autowired
   private AccountEndpoint accountService;
 
   @Override
-  @PostMapping(path = "buyWithTransactionSaga")
+  @POST
+  @Path("buyWithTransactionSaga")
   @ApiResponse(code = 400, response = String.class, message = "buy failed")
-  public boolean buyWithTransactionSaga(@RequestHeader(name = "userId") long userId,
-      @RequestParam(name = "productId") long productId, @RequestParam(name = "price") double price) {
+  public boolean buyWithTransactionSaga(@HeaderParam("userId") long userId,
+      @QueryParam("productId") long productId, @QueryParam("price") double price) {
     return customerSerivce.buyWithTransactionSaga(userId, productId, price);
   }
 
-  @GetMapping(path = "springBootPropertyTest")
+  @GET
+  @Path("springBootPropertyTest")
   public String springBootPropertyTest() {
     return valueTest + "--" + yamlValue + "--" + "--" + yamlValueOverride + "--" + model.getModelValue() + "--"
         + model.getYamlValue() + "--" + model.getYamlValueOverride();
   }
 
   @Override
-  @PostMapping(path = "buyWithTransactionTCC")
-  public boolean buyWithTransactionTCC(@RequestHeader(name = "userId") long userId,
-      @RequestParam(name = "productId") long productId, @RequestParam(name = "price") double price) {
+  @POST
+  @Path("buyWithTransactionTCC")
+  public boolean buyWithTransactionTCC(@HeaderParam("userId") long userId,
+      @QueryParam("productId") long productId, @QueryParam("price") double price) {
     return customerSerivce.buyWithTransactionTCC(userId, productId, price);
   }
 
   @Override
-  @PostMapping(path = "buyWithoutTransaction")
+  @POST
+  @Path("buyWithoutTransaction")
   @ApiResponse(code = 400, response = String.class, message = "buy failed")
-  public boolean buyWithoutTransaction(@RequestHeader(name = "userId") long userId,
-      @RequestParam(name = "productId") long productId, @RequestParam(name = "price") double price) {
+  public boolean buyWithoutTransaction(@HeaderParam("userId") long userId,
+      @QueryParam("productId") long productId, @QueryParam("price") double price) {
     // product will lock, put it in front
     if (!productService.buyWithoutTransaction(productId, userId, price)) {
-      throw new InvocationException(400, "product already sold", "product already sold");
+      throw new BizException(400, "product already sold");
     }
     if (!userService.buyWithoutTransaction(userId, price)) {
-      throw new InvocationException(400, "user do not got so much money", "user do not got so much money");
+      throw new BizException(400, "user do not got so much money");
     }
     if (!accountService.payWithoutTransaction(userId, price)) {
-      throw new InvocationException(400, "pay failed", "pay failed");
+      throw new BizException(400, "pay failed");
     }
     return true;
   }
@@ -102,22 +102,25 @@ public class CustomerEndpointImpl implements CustomerEndpoint {
 
   //实际是重置数据接口，不改名字了。 
   @Override
-  @PostMapping(path = "login")
-  public long login(@RequestParam(name = "username") String username,
-      @RequestParam(name = "password") String password) {
+  @POST
+  @Path("login")
+  public long login(@QueryParam("username") String username,
+      @QueryParam("password") String password) {
     productService.login(username, password);
     accountService.login(username, password);
     return userService.login(username, password);
   }
 
   @Override
-  @GetMapping(path = "searchAllProducts")
+  @GET
+  @Path("searchAllProducts")
   public List<ProductInfo> searchAllProducts() {
     return productService.searchAllForCustomer();
   }
 
   @Override
-  @GetMapping(path = "balance")
+  @GET
+  @Path("balance")
   public String balance() {
     double user = userService.queryReduced();
     double acct = accountService.queryReduced();

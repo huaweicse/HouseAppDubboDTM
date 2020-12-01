@@ -1,28 +1,23 @@
 package com.huawei.cse.houseapp.product.service;
 
-import javax.inject.Inject;
-import javax.ws.rs.core.Response.Status;
-
-import org.apache.servicecomb.pack.omega.transaction.annotations.Compensable;
-import org.apache.servicecomb.pack.omega.transaction.annotations.Participate;
-import org.apache.servicecomb.swagger.invocation.exception.InvocationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import com.huawei.cse.houseapp.BizException;
 import com.huawei.cse.houseapp.product.api.ProductInfo;
 import com.huawei.cse.houseapp.product.dao.ProductMapper;
 
 @Service
 public class ProductService {
-  @Inject
+  @Autowired
   private ProductMapper productMapper;
 
-  @Inject
+  @Autowired
   PlatformTransactionManager txManager;
 
-  @Compensable(compensationMethod = "cancelTransactionSaga")
   public boolean buyWithTransactionSaga(long productId, long userId, double price) {
     DefaultTransactionDefinition def = new DefaultTransactionDefinition();
     TransactionStatus status = txManager.getTransaction(def);
@@ -32,11 +27,11 @@ public class ProductService {
       // update，事务会加锁，不会并发。这里使用了spring事务。
       ProductInfo info = productMapper.getProductInfo(productId);
       if (info == null) {
-        throw new InvocationException(400, "", "product id not valid");
+        throw new BizException(400, "product id not valid");
       }
       if (price != info.getPrice()) {
         txManager.commit(status);
-        throw new InvocationException(400, "", "product price not valid");
+        throw new BizException(400, "product price not valid");
       }
       if (info.isReserved() || info.isSold()) {
         txManager.commit(status);
@@ -57,7 +52,6 @@ public class ProductService {
     return true;
   }
 
-  @Participate(confirmMethod = "confirmTransactionTCC", cancelMethod = "cancelTransactionTCC")
   public boolean buyWithTransactionTCC(long productId, long userId, double price) {
     DefaultTransactionDefinition def = new DefaultTransactionDefinition();
     TransactionStatus status = txManager.getTransaction(def);
@@ -67,11 +61,11 @@ public class ProductService {
       // update，事务会加锁，不会并发。这里使用了spring事务。
       ProductInfo info = productMapper.getProductInfo(productId);
       if (info == null) {
-        throw new InvocationException(Status.BAD_REQUEST, "product id not valid");
+        throw new BizException(400, "product id not valid");
       }
       if (price != info.getPrice()) {
         txManager.commit(status);
-        throw new InvocationException(Status.BAD_REQUEST, "product price not valid");
+        throw new BizException(400, "product price not valid");
       }
       if (info.isReserved() || info.isSold()) {
         txManager.commit(status);

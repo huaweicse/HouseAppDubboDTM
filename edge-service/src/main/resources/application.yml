@@ -1,12 +1,11 @@
-cse-config-order: 100
+servicecomb-config-order: 100
 
 # omega need this name
 spring:
   application:
     name: edge-service
 
-## CSE configurations
-cse:
+servicecomb:
   rest:
     address: 0.0.0.0:18080
 

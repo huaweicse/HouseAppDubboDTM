@@ -4,7 +4,6 @@ import org.apache.servicecomb.edge.core.AbstractEdgeDispatcher;
 
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-import io.vertx.ext.web.handler.CookieHandler;
 
 //优先级最低的转发器，将请求重定向到登录页面。
 public class RedirectToLoginDispatcher extends AbstractEdgeDispatcher {
@@ -15,7 +14,6 @@ public class RedirectToLoginDispatcher extends AbstractEdgeDispatcher {
 
   @Override
   public void init(Router router) {
-    router.routeWithRegex("/").handler(CookieHandler.create());
     router.routeWithRegex("/").handler(createBodyHandler());
     router.routeWithRegex("/").failureHandler(this::onFailure).handler(this::onRequest);
   }
