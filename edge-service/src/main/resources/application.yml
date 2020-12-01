@@ -6,21 +6,32 @@ spring:
     name: edge-service
 
 servicecomb:
+  service:
+    application: dtm
+    name: edge-service
+    version: 0.0.2
+    registry:
+      address: http://127.0.0.1:30100
+    config:
+      address: http://127.0.0.1:30113
+
   rest:
     address: 0.0.0.0:18080
 
   http:
     dispatcher:
       edge:
-        api:
+        http:
           enabled: true
-        default:
-          prefix: api
-          withVersion: false
-          prefixSegmentCount: 2
-  handler:
-    chain:
-      Provider:
-        default: tracing-provider
-      Consumer:
-        default: tracing-consumer,loadbalance
+          pattern: /(.*)
+          mappings:
+            customer-service:
+              prefixSegmentCount: 1
+              path: "/api/.*"
+              microserviceName: customer-service
+              versionRule: 0+
+            customer-website:
+              prefixSegmentCount: 1
+              path: "/ui/.*"
+              microserviceName: customer-website
+              versionRule: 0+

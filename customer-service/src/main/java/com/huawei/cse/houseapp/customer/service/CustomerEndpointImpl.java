@@ -9,7 +9,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 import com.huawei.cse.houseapp.BizException;
 import com.huawei.cse.houseapp.account.api.AccountEndpoint;
@@ -23,20 +22,11 @@ import io.swagger.annotations.ApiResponse;
 
 @Path("/")
 public class CustomerEndpointImpl implements CustomerEndpoint {
-  @Value("${cse.test.house.modelValue:'abc'}")
-  private String valueTest;
-
-  @Value("${cse.test.house.yamlValue}")
-  private String yamlValue;
-
-  @Value("${cse.test.house.yamlValueOverride}")
-  private String yamlValueOverride;
-
   @Autowired
   private ConfigurationPropertiesModel model;
 
   @Autowired
-  public CustomerService customerSerivce;
+  public CustomerService customerService;
 
   @Autowired
   private UserEndpoint userService;
@@ -53,22 +43,16 @@ public class CustomerEndpointImpl implements CustomerEndpoint {
   @ApiResponse(code = 400, response = String.class, message = "buy failed")
   public boolean buyWithTransactionSaga(@HeaderParam("userId") long userId,
       @QueryParam("productId") long productId, @QueryParam("price") double price) {
-    return customerSerivce.buyWithTransactionSaga(userId, productId, price);
+    return customerService.buyWithTransactionSaga(userId, productId, price);
   }
 
-  @GET
-  @Path("springBootPropertyTest")
-  public String springBootPropertyTest() {
-    return valueTest + "--" + yamlValue + "--" + "--" + yamlValueOverride + "--" + model.getModelValue() + "--"
-        + model.getYamlValue() + "--" + model.getYamlValueOverride();
-  }
 
   @Override
   @POST
   @Path("buyWithTransactionTCC")
   public boolean buyWithTransactionTCC(@HeaderParam("userId") long userId,
       @QueryParam("productId") long productId, @QueryParam("price") double price) {
-    return customerSerivce.buyWithTransactionTCC(userId, productId, price);
+    return customerService.buyWithTransactionTCC(userId, productId, price);
   }
 
   @Override

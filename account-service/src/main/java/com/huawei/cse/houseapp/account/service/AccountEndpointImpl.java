@@ -7,8 +7,6 @@ import com.huawei.cse.houseapp.account.api.AccountEndpoint;
 import com.huawei.cse.houseapp.account.dao.AccountInfo;
 import com.huawei.cse.houseapp.account.dao.AccountMapper;
 
-import io.swagger.annotations.ApiResponse;
-
 public class AccountEndpointImpl implements AccountEndpoint {
   //内存测试
   //private AccountMapper accountMapper = new MockedAccountMapper();
@@ -39,7 +37,6 @@ public class AccountEndpointImpl implements AccountEndpoint {
   }
 
   @Override
-  @ApiResponse(code = 400, response = String.class, message = "")
   public boolean payWithoutTransaction(long userId, double amount) {
     AccountInfo info = accountMapper.getAccountInfo(userId);
     if (info == null) {
@@ -54,13 +51,11 @@ public class AccountEndpointImpl implements AccountEndpoint {
   }
 
   @Override
-  @ApiResponse(code = 400, response = String.class, message = "")
   public boolean payWithTransactionSaga(long userid, double amount) {
     return accountService.payWithTransactionSaga(userid, amount);
   }
 
   @Override
-  @ApiResponse(code = 400, response = String.class, message = "")
   public boolean payWithTransactionTCC(long userid, double amount) {
     return accountService.payWithTransactionTCC(userid, amount);
   }

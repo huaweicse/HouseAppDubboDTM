@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.ImportResource;
 
 @SpringBootApplication
-@ImportResource({"classpath*:spring/dubbo-provider.xml", "classpath*:spring/dubbo-servicecomb.xml"})
+@ImportResource({"classpath*:spring/*.xml", "classpath*:META-INF/spring/*.xml"})
 @EnableConfigurationProperties
 public class CustomerApplication {
   public static void main(String[] args) throws Exception {
