@@ -1,7 +1,8 @@
 package com.huawei.cse.houseapp.customer;
 
-import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ImportResource;
 
@@ -11,7 +12,7 @@ import org.springframework.context.annotation.ImportResource;
 public class CustomerApplication {
   public static void main(String[] args) throws Exception {
     try {
-      SpringApplication.run(CustomerApplication.class, args);
+      new SpringApplicationBuilder(CustomerApplication.class).web(WebApplicationType.NONE).run(args);
     } catch (Exception e) {
       e.printStackTrace();
     }

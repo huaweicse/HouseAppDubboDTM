@@ -1,7 +1,8 @@
 package com.huawei.cse.houseapp.product;
 
-import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.ImportResource;
 
 @SpringBootApplication
@@ -9,7 +10,7 @@ import org.springframework.context.annotation.ImportResource;
 public class ProductApplication {
   public static void main(String[] args) throws Exception {
     try {
-      SpringApplication.run(ProductApplication.class, args);
+      new SpringApplicationBuilder(ProductApplication.class).web(WebApplicationType.NONE).run(args);
     } catch (Exception e) {
       e.printStackTrace();
     }

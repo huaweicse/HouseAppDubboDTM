@@ -22,7 +22,7 @@ servicecomb:
     dispatcher:
       edge:
         http:
-          enabled: true
+          auth.enabled: true
           pattern: /(.*)
           mappings:
             customer-service:

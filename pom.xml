@@ -15,7 +15,7 @@
     <spring.version>5.0.13.RELEASE</spring.version>
     <dubbo-servicecomb.version>1.3.5-SNAPSHOT</dubbo-servicecomb.version>
     <dubbo.version>2.7.8</dubbo.version>
-    <servicecomb.version>2.1.3</servicecomb.version>
+    <servicecomb.version>2.1.5-SNAPSHOT</servicecomb.version>
   </properties>
 
 

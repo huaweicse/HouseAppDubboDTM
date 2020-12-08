@@ -185,7 +185,7 @@
       $('.loadingTips').text('加载中，请稍等......');
       $.ajax({
         type: 'GET',
-        url: `/api/product-service/searchAll?userId=${getCookie('session-id')}`,
+        url: `/api/searchAll?userId=${getCookie('session-id')}`,
         success: function (data) {
           $('#Table').show();
           $('.loadingTips').hide();
@@ -221,7 +221,7 @@
 
     $.ajax({
         type: 'GET',
-        url: "/api/customer-service/balance",
+        url: "/api/balance",
         success: function (data) {
           // "user:9000000.0;acct:9000000.0;prod:9000000.0"
           var userCount = data.split(';');

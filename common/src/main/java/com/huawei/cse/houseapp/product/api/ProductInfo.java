@@ -1,16 +1,20 @@
 package com.huawei.cse.houseapp.product.api;
 
-public class ProductInfo {
+import java.io.Serializable;
+
+public class ProductInfo implements Serializable {
+    private static final long serialVersionUID = 0L;
+
     private long id;
 
     private String productName;
-    
+
     private boolean reserved;
-    
+
     private double price;
-    
+
     private boolean sold;
-    
+
     private long reservedUserId;
 
     public long getId() {
@@ -60,6 +64,6 @@ public class ProductInfo {
     public void setReservedUserId(long reservedUserId) {
         this.reservedUserId = reservedUserId;
     }
-    
-    
+
+
 }

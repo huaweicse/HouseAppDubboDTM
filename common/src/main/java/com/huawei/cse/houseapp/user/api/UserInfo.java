@@ -1,46 +1,47 @@
 package com.huawei.cse.houseapp.user.api;
 
-public class UserInfo {
-    private long userId;
+import java.io.Serializable;
 
-    private String userName;
+public class UserInfo implements Serializable {
+  private static final long serialVersionUID = 0L;
 
-    private double totalBalance;
+  private long userId;
 
-    private boolean reserved;
+  private String userName;
 
-    public long getUserId() {
-        return userId;
-    }
+  private double totalBalance;
 
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
+  private boolean reserved;
 
-    public String getUserName() {
-        return userName;
-    }
+  public long getUserId() {
+    return userId;
+  }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
+  public void setUserId(long userId) {
+    this.userId = userId;
+  }
 
-    public double getTotalBalance() {
-        return totalBalance;
-    }
+  public String getUserName() {
+    return userName;
+  }
 
-    public void setTotalBalance(double totalBalance) {
-        this.totalBalance = totalBalance;
-    }
+  public void setUserName(String userName) {
+    this.userName = userName;
+  }
 
-    public boolean isReserved() {
-        return reserved;
-    }
+  public double getTotalBalance() {
+    return totalBalance;
+  }
 
-    public void setReserved(boolean reserved) {
-        this.reserved = reserved;
-    }
+  public void setTotalBalance(double totalBalance) {
+    this.totalBalance = totalBalance;
+  }
 
-    
+  public boolean isReserved() {
+    return reserved;
+  }
 
+  public void setReserved(boolean reserved) {
+    this.reserved = reserved;
+  }
 }

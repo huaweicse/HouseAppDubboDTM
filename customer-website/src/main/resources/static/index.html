@@ -92,7 +92,7 @@
                   formData.password = "test";
                   $.ajax({
                     type: 'POST',
-                    url: "/api/customer-service/login",
+                    url: "/api/login",
                     data: formData,
                     success: function a(data) {
                         window.alert("成功");
@@ -220,12 +220,12 @@
                 </div>
                 
                 <div class="product_list_header_wwd" style="float: left;margin-top: 32px;margin-left:10px ;">
-                    <form action="/ui/customer-website/list.html">
+                    <form action="/ui/list.html">
                         <input type="submit" name="submit" value="抢购详情" class="button" />
                     </form>
                 </div>
                 <div class="product_list_header_wwd" style="float: left;margin-top: 32px;margin-left:10px ;">
-                    <form action="/ui/customer-website/index.html">
+                    <form action="/ui/index.html">
                         <input type="submit" name="submit" value="刷新" class="button" />
                     </form>
                 </div>
@@ -346,7 +346,7 @@
                   formData.price = price;
                   $.ajax({
                     type: 'POST',
-                    url: "/api/customer-service/buyWithTransactionTCC",
+                    url: "/api/buyWithTransactionTCC",
                     data: formData,
                     success: function a(data) {
                         window.alert("抢购成功");
@@ -391,7 +391,7 @@
                         '<h4>价格：' + price + ' 元</h4>' +
                         '</div>' +
                         '<div class="snipcart-details top_brand_home_details">' +
-                        '<form action="/api/customer-service/buy" method="post">' +
+                        '<form action="/api/buy" method="post">' +
                         '<fieldset>' +
                         '<input type="hidden" name="productId" value="' + id +'" />' +
                         '<input type="hidden" name="add" value="1" />' +
@@ -471,7 +471,7 @@
         if (userData !== null) {
             $.ajax({
                 type: 'GET',
-                url: "/api/user-service/getUserInfo?userName=" + userData.userName,
+                url: "/api/getUserInfo?userName=" + userData.userName,
                 success: function a(data) {
                     $('.userNum').text(data.totalBalance);
                 },
@@ -481,7 +481,7 @@
         };
             $.ajax({
                 type: 'GET',
-                url: "/api/customer-service/searchAllProducts",
+                url: "/api/searchAllProducts",
                 success: function (data) {
                     constructProductDom(data);
                 },

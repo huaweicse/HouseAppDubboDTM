@@ -2,11 +2,14 @@ package com.huawei.cse.houseapp.customer.service;
 
 import java.util.List;
 
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,11 +19,13 @@ import com.huawei.cse.houseapp.customer.api.CustomerEndpoint;
 import com.huawei.cse.houseapp.product.api.ProductEndpoint;
 import com.huawei.cse.houseapp.product.api.ProductInfo;
 import com.huawei.cse.houseapp.user.api.UserEndpoint;
+import com.huawei.cse.houseapp.user.api.UserInfo;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 
 @Path("/")
+@Produces(MediaType.APPLICATION_JSON)
 public class CustomerEndpointImpl implements CustomerEndpoint {
   @Autowired
   private ConfigurationPropertiesModel model;
@@ -42,7 +47,7 @@ public class CustomerEndpointImpl implements CustomerEndpoint {
   @Path("buyWithTransactionSaga")
   @ApiResponse(code = 400, response = String.class, message = "buy failed")
   public boolean buyWithTransactionSaga(@HeaderParam("userId") long userId,
-      @QueryParam("productId") long productId, @QueryParam("price") double price) {
+      @FormParam("productId") long productId, @FormParam("price") double price) {
     return customerService.buyWithTransactionSaga(userId, productId, price);
   }
 
@@ -51,7 +56,7 @@ public class CustomerEndpointImpl implements CustomerEndpoint {
   @POST
   @Path("buyWithTransactionTCC")
   public boolean buyWithTransactionTCC(@HeaderParam("userId") long userId,
-      @QueryParam("productId") long productId, @QueryParam("price") double price) {
+      @FormParam("productId") long productId, @FormParam("price") double price) {
     return customerService.buyWithTransactionTCC(userId, productId, price);
   }
 
@@ -60,7 +65,7 @@ public class CustomerEndpointImpl implements CustomerEndpoint {
   @Path("buyWithoutTransaction")
   @ApiResponse(code = 400, response = String.class, message = "buy failed")
   public boolean buyWithoutTransaction(@HeaderParam("userId") long userId,
-      @QueryParam("productId") long productId, @QueryParam("price") double price) {
+      @FormParam("productId") long productId, @FormParam("price") double price) {
     // product will lock, put it in front
     if (!productService.buyWithoutTransaction(productId, userId, price)) {
       throw new BizException(400, "product already sold");
@@ -88,8 +93,8 @@ public class CustomerEndpointImpl implements CustomerEndpoint {
   @Override
   @POST
   @Path("login")
-  public long login(@QueryParam("username") String username,
-      @QueryParam("password") String password) {
+  public long login(@FormParam("username") String username,
+      @FormParam("password") String password) {
     productService.login(username, password);
     accountService.login(username, password);
     return userService.login(username, password);
@@ -97,7 +102,24 @@ public class CustomerEndpointImpl implements CustomerEndpoint {
 
   @Override
   @GET
+  @Path("getUserInfo")
+  @Produces(MediaType.APPLICATION_JSON)
+  public UserInfo getUserInfo(@QueryParam("userName") String userName) {
+    return userService.getUserInfo(userName);
+  }
+
+  @Override
+  @POST
+  @Path("login2")
+  public long login2(@FormParam("username") String username,
+      @FormParam("password") String password) {
+    return userService.login2(username, password);
+  }
+
+  @Override
+  @GET
   @Path("searchAllProducts")
+  @Produces(MediaType.APPLICATION_JSON)
   public List<ProductInfo> searchAllProducts() {
     return productService.searchAllForCustomer();
   }
@@ -105,10 +127,19 @@ public class CustomerEndpointImpl implements CustomerEndpoint {
   @Override
   @GET
   @Path("balance")
+  @Produces(MediaType.APPLICATION_JSON)
   public String balance() {
     double user = userService.queryReduced();
     double acct = accountService.queryReduced();
     double prod = productService.queryReduced();
     return String.format("user:%s;acct:%s;prod:%s", user, acct, prod);
+  }
+
+  @Override
+  @GET
+  @Path("searchAll")
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<ProductInfo> searchAll(@QueryParam("userId") int userId) {
+    return productService.searchAll(userId);
   }
 }

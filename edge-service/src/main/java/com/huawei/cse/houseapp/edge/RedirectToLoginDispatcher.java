@@ -20,7 +20,7 @@ public class RedirectToLoginDispatcher extends AbstractEdgeDispatcher {
 
   protected void onRequest(RoutingContext context) {
     context.response().setStatusCode(302);
-    context.response().putHeader("Location", "/ui/customer-website/login.html");
+    context.response().putHeader("Location", "/ui/login.html");
     context.response().end();
   }
 }

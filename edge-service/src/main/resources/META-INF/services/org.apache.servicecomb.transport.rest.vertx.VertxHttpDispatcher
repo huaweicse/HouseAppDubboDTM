@@ -1,3 +1,2 @@
-com.huawei.cse.houseapp.edge.LoginDispatcher
-com.huawei.cse.houseapp.edge.ApiDispatcher
+com.huawei.cse.houseapp.edge.AuthCommonHttpEdgeDispatcher
 com.huawei.cse.houseapp.edge.RedirectToLoginDispatcher
